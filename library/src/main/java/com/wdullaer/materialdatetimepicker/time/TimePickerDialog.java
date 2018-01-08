@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
@@ -118,6 +119,7 @@ public class TimePickerDialog extends DialogFragment implements
     private TextView mSecondSpaceView;
     private TextView mAmTextView;
     private TextView mPmTextView;
+    private TextView mInfoTextView;
     private View mAmPmLayout;
     private RadialPickerLayout mTimePicker;
 
@@ -139,6 +141,9 @@ public class TimePickerDialog extends DialogFragment implements
     private boolean mEnableMinutes;
     private int mOkResid;
     private String mOkString;
+    private int mInfoResid;
+    private String mInfoString;
+    private int mInfoColor;
     private int mOkColor;
     private int mCancelResid;
     private String mCancelString;
@@ -165,6 +170,7 @@ public class TimePickerDialog extends DialogFragment implements
     private String mSelectMinutes;
     private String mSecondPickerDescription;
     private String mSelectSeconds;
+
 
     /**
      * The callback interface used to indicate the user is done filling in
@@ -219,6 +225,8 @@ public class TimePickerDialog extends DialogFragment implements
         mEnableSeconds = false;
         mEnableMinutes = true;
         mOkResid = R.string.mdtp_ok;
+        mInfoResid = -1;
+        mInfoColor = -1;
         mOkColor = -1;
         mCancelResid = R.string.mdtp_cancel;
         mCancelColor = -1;
@@ -297,6 +305,24 @@ public class TimePickerDialog extends DialogFragment implements
     @SuppressWarnings("unused")
     public void setCancelColor(@ColorInt int color) {
         mCancelColor= Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
+     * Set the text color of the info label
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setInfoColor(String color) {
+        mInfoColor = Color.parseColor(color);
+    }
+
+    /**
+     * Set the text color of the info label
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setInfoColor(@ColorInt int color) {
+        mInfoColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 
     @Override
@@ -562,6 +588,25 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     /**
+     * Set the label for the Ok button (max 12 characters)
+     * @param infoString A literal String to be used as the info label
+     */
+    @SuppressWarnings("unused")
+    public void setInfoText(String infoString) {
+        mInfoString = infoString;
+    }
+
+    /**
+     * Set the label for the Ok button (max 12 characters)
+     * @param infoResid A resource ID to be used as the info label
+     */
+    @SuppressWarnings("unused")
+    public void setInfoText(@StringRes int infoResid) {
+        mOkString = null;
+        mOkResid = mInfoResid;
+    }
+
+    /**
      * Set which layout version the picker should use
      * @param version The version to use
      */
@@ -685,6 +730,7 @@ public class TimePickerDialog extends DialogFragment implements
         mPmTextView = view.findViewById(R.id.mdtp_pm_label);
         mPmTextView.setOnKeyListener(keyboardListener);
         mAmPmLayout = view.findViewById(R.id.mdtp_ampm_layout);
+        mInfoTextView = view.findViewById(R.id.mdtp_info_label);
         String[] amPmTexts = new DateFormatSymbols(mLocale).getAmPmStrings();
         mAmText = amPmTexts[0];
         mPmText = amPmTexts[1];
@@ -761,6 +807,15 @@ public class TimePickerDialog extends DialogFragment implements
         mCancelButton.setTypeface(TypefaceHelper.get(context, "Roboto-Medium"));
         if(mCancelString != null) mCancelButton.setText(mCancelString);
         else mCancelButton.setText(mCancelResid);
+
+        mInfoTextView.setTypeface(TypefaceHelper.get(context, "Roboto-Medium"));
+        if(mInfoString != null) {
+            mInfoTextView.setVisibility(View.VISIBLE);
+            mInfoTextView.setText(mInfoString);
+        } else if(mInfoResid != -1) {
+            mInfoTextView.setVisibility(View.VISIBLE);
+            mInfoTextView.setText(mInfoResid);
+        }
         mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // Enable or disable the AM/PM view.
@@ -984,6 +1039,8 @@ public class TimePickerDialog extends DialogFragment implements
         else mOkButton.setTextColor(mAccentColor);
         if (mCancelColor != -1) mCancelButton.setTextColor(mCancelColor);
         else mCancelButton.setTextColor(mAccentColor);
+        if (mInfoColor != -1) mInfoTextView.setTextColor(mInfoColor);
+        else mInfoTextView.setTextColor(mAccentColor);
 
         if(getDialog() == null) {
             view.findViewById(R.id.mdtp_done_background).setVisibility(View.GONE);

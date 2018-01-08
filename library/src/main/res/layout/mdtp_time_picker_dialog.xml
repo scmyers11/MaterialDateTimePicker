@@ -47,5 +47,16 @@
             android:focusableInTouchMode="true" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/mdtp_info_label"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/mdtp_ampm_left_padding"
+        android:layout_marginEnd="@dimen/mdtp_ampm_left_padding"
+        android:layout_marginTop="@dimen/mdtp_ampm_left_padding"/>
+
     <include layout="@layout/mdtp_done_button" />
 </LinearLayout>
